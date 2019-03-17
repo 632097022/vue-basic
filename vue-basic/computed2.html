@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Vue.js computed练习——计算购物车总价</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		
+		<!-- 通过CDN引入Vue.js -->
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<style type="text/css">
+			header{
+				background: #FF7F50;
+				width: 100%;
+				height: 120px;
+				color: #EEEEEE;
+				left: 20px;
+			}
+			.container{
+				left: 10px;
+				position: relative;
+				top: -20px;
+				display: flex;
+				flex-direction: column;
+			}
+			.item{
+				
+				display: flex;
+				border: 1px solid #008000;
+				border-radius: 10px;
+				width: 85%;
+				height: 50px;
+				margin-bottom: 10px;
+				/* 垂直方向居中 */
+				align-items: center;
+				/* 水平方向居中 */
+				/* justify-content: center; */
+				/* 内边距 */
+				padding-left: 10px;
+				padding-right: 10px;
+				background: #EEEEEE;
+			}
+			.item-id{
+				flex: 1 1 20%;
+			}
+			.item-name{
+				flex: 1 1 20%;
+			}
+			.item-price{
+				flex: 1 1 20%;
+			}
+			.item-count{
+				flex: 1 1 20%;
+			}
+			.goods-count{
+				width: 15px;
+				text-align: center;
+			}
+			.accounts{
+				display: flex;
+				position: absolute;
+				background: #FF7F50;
+				width: 60px;
+				height: 40px;
+				/* 垂直方向居中 */
+				align-items: center;
+				border: 1px #008000;
+				border-radius: 10px;
+				left: 270px;
+				top: 220px;
+				outline:none;
+				justify-content: center;
+			}
+			.totle{
+				position: relative;
+				top: -55px;
+				left: 100px;
+			}
+			#photo{
+				position: relative;
+				width: 40px;
+				height: 40px;
+				left: 15px;
+				
+			}
+			.settlement {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.btn {
+				width: 100px;
+				height: 40px;
+				background-color: #FF5000;
+				border-radius: 10px;
+				border: none;
+				outline: none;
+				color: #FFF;
+				font-size: 16px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h3>购物车</h3>
+			<p>共3件宝贝</p>
+		</header>
+		<!-- vue-app的根容器 -->
+		<div id="app">
+			<div class="container">
+				<div class="item" v-for="goods in goodsList">
+					<div class="item-id">
+						{{goods.id}}
+						<img :src="goods.photo" id="photo"/>
+					</div>
+					<div class="item-name">
+						{{goods.name}}
+					</div>
+					<div class="item-price">
+						{{goods.price}}
+					</div>
+					<div class="item-count">
+						<!--  :disabled="goods.count===0"减到0不能再减了-->
+						<button type="button" @click="goods.count-=1" :disabled="goods.count===0">-</button>
+						<input type="text" v-model="goods.count" class="goods-count"/>
+						<button type="button" @click="goods.count+=1">+</button>
+					</div>
+				</div>
+				<hr >
+				<!-- <h3>Total price:</h3>
+				<p class="totle">￥{{totalPrice}}</p>
+				<button class="accounts">结算</button> -->
+				<div class="settlement">
+					<h3>总价：￥{{totalPrice}}</h3>
+					<button type="button" class="btn" @click="settlement()">结算</button>
+				</div>
+				<div class="result" v-if="show">
+					你购买了{{settlement}}件商品，需要支付总价为：{{totalPrice}}元
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			// 实例化一个vue对象
+			var app=new Vue({
+				el:'#app',
+				data:{
+					goodsList:[
+						{
+							id:1,
+							name:'iphone 8',
+							price:6000,
+							count:1,
+							photo:'img/xphone.jpg'
+						},
+						{
+							id:2,
+							name:'iphone X',
+							price:7000,
+							count:2,
+							photo:'img/iphone2.jpg'
+						},
+						{
+							id:3,
+							name:'iphone XS Max',
+							price:8000,
+							count:1,
+							photo:'img/iphone3.jpg'
+						}
+					],
+					show:false
+				},
+				methods:{
+					
+				},
+				computed:{
+					totalPrice:function(){
+						var totalPrice = 0;
+						var len=this.goodsList.length;
+						for(var i=0;i<len;i++){
+							totalPrice +=this.goodsList[i].price*this.goodsList[i].count;
+						}
+						return totalPrice;
+				},
+						settlement: function() {
+						this.show = true;
+						var totalCount = 0;
+						var len = this.goodsList.length;
+						for (var i = 0; i < len; i++) {
+							totalCount += this.goodsList[i].count;
+						}
+						return totalCount;
+					}
+		
+				} 
+			})
+		</script>
+	</body>
+</html>
